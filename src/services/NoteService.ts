@@ -25,7 +25,7 @@ export class NoteServiceImpl implements NoteService {
     // es true, además deben llamar a notify(nota) del módulo
     // notificationService. En el test, simulen ese módulo completo con
     // vi.mock y verifiquen la llamada con toHaveBeenCalledWith.
-    throw new Error('createNote: no implementado (Ejercicio 1)');
+    return this.repo.create(data);
   }
 
   listNotes(): Note[] {
@@ -37,7 +37,8 @@ export class NoteServiceImpl implements NoteService {
 
   getNote(id: number): Note | undefined {
     // 🔴🟢 EJERCICIO 3: ciclo completo (test + implementación).
-    throw new Error('getNote: no implementado (Ejercicio 3)');
+    const note = this.repo.findById(id);
+    return note;
   }
 
   updateNote(id: number, patch: NotePatch): Note | undefined {
