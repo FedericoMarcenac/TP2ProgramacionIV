@@ -56,4 +56,26 @@ describe('Rutas HTTP de Notas - tests de integración', () => {
             expect(response.status).toBe(404);
         });
     });
+
+    describe('DELETE /notes/:id (Ejercicio 5)', () => {
+        it('borra la nota y devuelve status 204', async () => {
+            const createRes = await request(app)
+                .post('/notes')
+                .send({ title: 'Nota a borrar', content: 'Chau' });
+
+            const noteId = createRes.body.id;
+
+            const response = await request(app).delete(`/notes/${noteId}`);
+            expect(response.status).toBe(204);
+
+            const getRes = await request(app).get(`/notes/${noteId}`);
+            expect(getRes.status).toBe(404);
+        });
+
+        it('devolver status 404 si el ID no existe', async () => {
+            const response = await request(app).delete('/notes/999');
+
+            expect(response.status).toBe(404);
+        });
+    });
 });
