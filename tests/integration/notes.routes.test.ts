@@ -78,4 +78,45 @@ describe('Rutas HTTP de Notas - tests de integración', () => {
             expect(response.status).toBe(404);
         });
     });
+    
+    describe('POST /notes (Ejercicio 1)', () => {
+        it('crea la nota y devuelve status 201', async () => {
+            const response = await request(app)
+                .post('/notes')
+                .send({ title: 'Nueva nota', content: 'Contenido' });
+
+            expect(response.status).toBe(201);
+            expect(response.body.id).toBeDefined();
+            expect(response.body.title).toBe('Nueva nota');
+            expect(response.body.pinned).toBe(false);
+        });
+
+        it('devuelve status 400 si falta el title', async () => {
+            const response = await request(app)
+                .post('/notes')
+                .send({ content: 'Sin título' });
+
+            expect(response.status).toBe(400);
+            expect(response.body.error).toBe('ValidationError');
+        });
+    });
+
+    describe('GET /notes (Ejercicio 2)', () => {
+        it('devuelve status 200 y una lista vacía si no hay notas', async () => {
+            const response = await request(app).get('/notes');
+
+            expect(response.status).toBe(200);
+            expect(response.body).toEqual([]);
+        });
+
+        it('devuelve status 200 y todas las notas creadas', async () => {
+            await request(app).post('/notes').send({ title: 'A', content: 'B' });
+            await request(app).post('/notes').send({ title: 'C', content: 'D' });
+
+            const response = await request(app).get('/notes');
+
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveLength(2);
+        });
+    });
 });
